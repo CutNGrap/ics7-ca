@@ -7,7 +7,7 @@ import random
 SIZE = 50
 DELTA = 1e-7
 FILE = "points.csv"
-FILE_2DIM = "points_2dim.csv"
+FILE_2DIM = "test_2d.csv"
 
 def one_dimensional():
     print('''
@@ -73,7 +73,7 @@ def two_dimensional():
         gauss_matrix = get_gauss_two_dim_second(x, y, z, p, N, decision == 1)
         coef = solve_gauss_matrix(gauss_matrix)
         Z = coef[0] + coef[1] * X + coef[2] * Y + coef[3] * X * Y + coef[4] * X * X + coef[5] * Y * Y
-        print(coef)
+        # print(coef)
     else:
         return
     ax = matplotlib.pyplot.axes(projection='3d')
@@ -102,8 +102,8 @@ def generate_gauss_matrix_one_dim(x, y, p, n, N, same_weight):
         for k in range(n + 1):
             summa = 0
             for i in range(N):
-                pi = 1 if same_weight else p[i]
-                summa += pi * x[i] ** (k + m)
+                r_i = 1 if same_weight else p[i]
+                summa += r_i * x[i] ** (k + m)
             gauss_string.append(summa)
         summa = 0
         for i in range(N):
@@ -114,20 +114,23 @@ def generate_gauss_matrix_one_dim(x, y, p, n, N, same_weight):
     return gauss_matrix
 
 def solve_gauss_matrix(matrix):
+    # if abs(matrix[j][i]) < DELTA:
+#     # for sas in matrix:
+#     #     print(*sas)
+#     # print()
     for i in range(len(matrix) - 1):
-        if matrix[i][i] == 0:
+        if abs(matrix[i][i]) < DELTA:
             k = i + 1
-            while k < len(matrix) and matrix[k][i] != 0:
+            while k < len(matrix) and abs(matrix[k][i]) > DELTA: # !=0
                 k += 1
             if k == len(matrix):
                 return
             else:
                 swap_lines(matrix, i, k)
         for j in range(i + 1, len(matrix)):
-            # if abs(matrix[j][i]) < DELTA:
-                coef = -(matrix[i][i] / matrix[j][i])
-                mult_line(matrix[j], coef)
-                matrix[j] = add_lines(matrix[j], matrix[i])
+            coef = -(matrix[i][i] / matrix[j][i])
+            mult_line(matrix[j], coef)
+            matrix[j] = add_lines(matrix[j], matrix[i])
     x = [0] * len(matrix)
     for i in range(len(matrix) - 1, -1, -1):
         summa = matrix[i][-1]
@@ -136,6 +139,12 @@ def solve_gauss_matrix(matrix):
         x[i] = summa / matrix[i][i]
     return x
 
+
+def swap_lines(matrix, index1, index2):
+    line1 = matrix[index1]
+    line2 = matrix[index2]
+    matrix[index1] = line2
+    matrix[index2] = line1
 
 def get_gauss_two_dim_first(x, y, z, p, N, same_weight):
     gauss_matrix = []
@@ -156,12 +165,12 @@ def get_gauss_two_dim_second(x, y, z, p, N, same_weight):
     for i in range(6):
         gauss_matrix.append([0, 0, 0, 0, 0, 0, 0])
     for i in range(N):
-        pi = 1 if same_weight else p[i]
+        r_i = 1 if same_weight else p[i]
         values = [1, x[i], y[i], x[i] * y[i], x[i] * x[i], y[i] * y[i], z[i]]
         diffs = [1, x[i], y[i], x[i] * y[i], x[i] * x[i], y[i] * y[i]]
         for j in range(6):
             for k in range(7):
-                gauss_matrix[j][k] += pi * values[k] * diffs[j]
+                gauss_matrix[j][k] += r_i * values[k] * diffs[j]
     return gauss_matrix
 
 
