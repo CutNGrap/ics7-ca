@@ -1,5 +1,5 @@
 import numpy
-from math import cos, pi
+from math import cos, pi, sqrt
 
 EPS = 1e-8
 
@@ -61,7 +61,7 @@ class Legander_polynome(Polynome):
             return coefs_n_1
 
     def roots(self):
-        roots = [cos(pi * (4 * i - 1) / (4 * self.power + 2)) for i in range(self.power)]
+        roots = [cos(pi * (4 * i + 3) / (4 * self.power + 2)) for i in range(self.power)]
         for i, root in enumerate(roots):  
             root_val = self.value(root)
             while abs(root_val) > EPS:
@@ -96,7 +96,6 @@ def simpson_integ(n, bot, top, function):
 def double_integr(n, m, x_left, x_right, y_bottom, y_top, function):
     paul = Legander_polynome(n)
     roots = paul.roots()
-    # print(roots)
     a, b = generate_matrix(n, roots)
     a_i = list(numpy.linalg.solve(a, b))
     s = 0
@@ -111,13 +110,13 @@ def f(x, y):
     if (x - 1) ** 2 + y ** 2 - 1 > EPS:
         return 0
     else:
-        return (x ** 2 + y ** 2) ** 0.5
+        return sqrt(x ** 2 + y ** 2)
 
 if __name__ == "__main__":
     x_left = 0
     x_right = 2
     y_bottom = -1
     y_top = 1
-    n = 10
-    m =  5
+    n = 11
+    m =  12
     print(double_integr(n, m, x_left, x_right, y_bottom, y_top, f))

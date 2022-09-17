@@ -1,4 +1,3 @@
-# правосторонняя разностная производная O(h)
 def col_1(h, y):
     dy = [0] * len(y)
     for i in range(len(y) - 1):
@@ -6,7 +5,6 @@ def col_1(h, y):
     dy[-1] = dy[-2]
     return dy
 
-# центральная разностная производная O(h^2)
 def col_2(h, y):
     dy = [0] * len(y)
     dy[0] = (-3 * y[0] + 4 * y[1] - y[2]) / (2 * h)
@@ -15,7 +13,6 @@ def col_2(h, y):
     dy[-1] = (3 * y[-1] - 4 * y[-2] + y[-3]) / (2 * h)
     return dy
 
-# 2я формула Рунге с правосторонней производной O(h^2)
 def col_3(x, y, column_1):
     m = 2
     p = 1
@@ -32,7 +29,6 @@ def col_3(x, y, column_1):
         dy[i] = column_1[i] + (column_1[i] - dy[i]) / (m ** p - 1)
     return dy
 
-# ksi = a0/(a1+a2*x) ; eta = y
 def col_4(x, y):
     eta = [0] * len(y)
     ksi = [0] * len(y)
@@ -50,7 +46,6 @@ def col_4(x, y):
         dy[i] = (y[i] / (x[i] ** 2) * d_eta[i]) / (d_eta[i] / x[i] - 1)
     return dy   
 
-# вторая разностная производная O(h^2)
 def col_5(h, y):
     dy = [0] * len(y)
     dy[0] = (2 * y[0] - 5 * y[1] + 4 * y[2] - y[3]) / (h ** 2)
